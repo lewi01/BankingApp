@@ -3,19 +3,25 @@ package lewisCode.app;
 import java.sql.*;
 
 public class SimpleBank {
-    public void createNewDataBase(String fileName){
-        String url = "jdbc:sqlite:/home/lewi/Softwares/DB/"+fileName;
+
+    private final String url = "jdbc:sqlite:/home/lewi/Softwares/DB/banking.db";
+
+    public SimpleBank() {
+
+    }
+    public void createNewDataBase(){
+
         try(Connection connection = DriverManager.getConnection(url)) {
             if (connection !=null) {
                 DatabaseMetaData meta = connection.getMetaData();
                 System.out.println("The driver name is " + meta.getDriverName());
+                System.out.println("A new database has been created.");
             }
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }
     }
-    public void createTables(String path){
-        String url ="jdbc:sqlite:/home/lewi/Softwares/DB/"+path ;
+    public void createTables(){
         String sql = "CREATE TABLE IF NOT EXISTS customer_Account (\n"
                 + "	id INTEGER PRIMARY KEY AUTOINCREMENT,\n"
                 + "	number TEXT NOT NULL,\n"
@@ -29,37 +35,61 @@ public class SimpleBank {
             System.out.println(e.getMessage());
         }
     }
-    public void insertCustomer(String number,String pin){
-        String url = "INSERT INTO customer_Account (number,pin) VALUES(?,?)";
-        try (Connection connection = DriverManager.getConnection(url);
-             PreparedStatement preparedStatement = connection.prepareStatement(url)){
-            preparedStatement.setString(1,number);
-            preparedStatement.setString(2,pin);
-            preparedStatement.executeUpdate();
+    private Connection connect() {
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return connection;
+    }
+
+    public void insertCustomer(String number, String pin){
+        String sql = "INSERT INTO customer_Account (number,pin) VALUES(?,?)";
+        try (Connection connection = this.connect();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+                    preparedStatement.setString(1,number);
+                    preparedStatement.setString(2,pin);
+                    preparedStatement.executeUpdate();
+
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }
-
     }
-    public Customer selectCustomer(String number, String pin){
-        String sql = "SELECT number,balance "
-                + "FROM customer_Account"
-                + "WHERE  number= '" +number+"'" +
-                "AND"+
-
-                "pin = '"+ pin+ "'";
-        try (Connection connection = DriverManager.getConnection(sql)) {
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                ResultSet resultSet = statement.executeQuery(sql);
-                if (resultSet == null){
-                    return null;
+    public double getBalance(String number) {
+        String sql = "SELECT balance FROM customer_Account WHERE number=?";
+        try (Connection connection = this.connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, number);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getLong("balance");
                 }
-                return new Customer(resultSet.getDouble("balance"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return -1;
+    }
+
+    public boolean checkingCustomerAccountPin(String number, String pin){
+        String sql = "SELECT number, pin "
+                + "FROM customer_Account "
+                + "WHERE  number= ? " +
+                "AND pin= ?";
+        try (Connection connection = this.connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+            preparedStatement.setString(1,number);
+            preparedStatement.setString(2,pin);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+               return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
         }
-
+        return false;
     }
+
 }

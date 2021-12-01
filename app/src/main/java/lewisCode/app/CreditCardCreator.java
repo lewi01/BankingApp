@@ -2,8 +2,9 @@ package lewisCode.app;
 
 import java.util.Random;
 
-public class CardGenerator {
+public class CreditCardCreator {
     public static Random random = new Random();
+    //customer account number generator
     public String customerNumberGenerator(){
         long num = random.nextInt((999999999 - 100000000) + 1) + 100000000;
         String format = String.format("%d",num);
@@ -30,8 +31,10 @@ public class CardGenerator {
         }
         return luhnAlgo;
     }
+    //customer pin generator
     public String customerPinGenerator(){
         int pin = random.nextInt((9999 - 1000) + 1) + 1000;
         return String.format("%d",pin);
     }
+
 }

@@ -4,12 +4,12 @@ import java.util.Scanner;
 
 public class Controller {
     public static SimpleBank simpleBank = new SimpleBank();
-    public static CardGenerator cardGenerator = new CardGenerator();
+    public static Customer customer = new Customer();
+    public static CreditCardCreator creditCardCreator = new CreditCardCreator();
     public static Scanner scanner = new Scanner(System.in);
-    public static String fileName = "banking.db";
     public static void main(String[] args) {
-        simpleBank.createNewDataBase(fileName);
-        simpleBank.createTables(fileName);
+        simpleBank.createNewDataBase();
+        simpleBank.createTables();
         boolean quite = false;
         while (!quite){
             printMenu();
@@ -40,11 +40,11 @@ public class Controller {
     }
     public static void userCreatingAccount(){
         System.out.println("Your card has been created");
-        String customerNum = cardGenerator.customerNumberGenerator();
-        String customerPin =cardGenerator.customerPinGenerator();
-        System.out.println("Your card number:" + "\n" + customerNum);
-        System.out.println("Your card PIN:" + "\n" + customerPin);
-        simpleBank.insertCustomer(customerNum,customerPin);
+        String number = creditCardCreator.customerNumberGenerator();
+        String pin = creditCardCreator.customerPinGenerator();
+        System.out.println("Your card number:" + "\n" +number );
+        System.out.println("Your card PIN:" + "\n" + pin);
+        simpleBank.insertCustomer(number,pin);
     }
     public static void userLogin(){
         System.out.println("Enter your card number:");
@@ -53,10 +53,9 @@ public class Controller {
         System.out.println("Enter your PIN:");
         int pin = scanner.nextInt();
         String pins = String.valueOf(pin);
-        Customer customerDetail = simpleBank.selectCustomer(number,pins);
-        if (customerDetail.getCustomerAccountNumber() == customerDetail.getCustomerPinNumber()){
+        boolean customers = simpleBank.checkingCustomerAccountPin(number,pins);
+        if (customers){
             System.out.println("You have successfully logged in!");
-            int balance =0;
             int print;
             while (true){
                 successfulLogInMenu();
@@ -65,7 +64,7 @@ public class Controller {
                     System.out.println("Bye!");
                     break;
                 }else if(print == 1) {
-                    System.out.println("Balance: " + balance);
+                    System.out.println("Balance: " + simpleBank.getBalance(number));
                 }else if(print == 2){
                     System.out.println("You have successfully logged out!");
                     break;

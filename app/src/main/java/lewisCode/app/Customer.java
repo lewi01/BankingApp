@@ -1,25 +1,30 @@
 package lewisCode.app;
 
-public class Customer {
-    private  final double balance;
-    private  double customerAccountNumber;
-    private double customerPinNumber;
+import java.util.Random;
 
-    public Customer(double balance) {
-        this.balance = balance;
+public class Customer {
+    private  String customerAccountNumber;
+    private  String customerPinNumber;
+    private  double balance ;
+
+    public Customer() {
+
+    }
+    public Customer( String customerAccountNumber, String customerPinNumber,double balance) {
         this.customerAccountNumber = customerAccountNumber;
         this.customerPinNumber = customerPinNumber;
+        this.balance = balance;
     }
 
     public double getBalance() {
         return balance;
     }
 
-    public double getCustomerAccountNumber() {
+    public String getCustomerAccountNumber() {
         return customerAccountNumber;
     }
 
-    public double getCustomerPinNumber() {
+    public String getCustomerPinNumber() {
         return customerPinNumber;
     }
 

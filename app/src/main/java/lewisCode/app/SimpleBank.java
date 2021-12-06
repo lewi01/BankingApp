@@ -91,5 +91,29 @@ public class SimpleBank {
         }
         return false;
     }
-
+    public boolean deleteAccount(String number){
+        String sql = "DELETE FROM customer_Account WHERE number= ?";
+        try(Connection connection = this.connect();
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+            preparedStatement.setString(1,number);
+            preparedStatement.executeUpdate();
+            return true;
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+    public boolean updateAccountBalance(String number, int balance){
+        String sql = "UPDATE  customer_Account SET balance= ? WHERE number= ?";
+        try(Connection connection = this.connect();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+            preparedStatement.setInt(1,balance);
+            preparedStatement.setString(2,number);
+            preparedStatement.executeUpdate();
+            return true;
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
 }

@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 public class Controller {
     public static SimpleBank simpleBank = new SimpleBank();
-    public static Customer customer = new Customer();
     public static CreditCardCreator creditCardCreator = new CreditCardCreator();
     public static Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
@@ -35,7 +34,10 @@ public class Controller {
     }
     public  static  void successfulLogInMenu(){
         System.out.println("1. Balance");
-        System.out.println("2. Log out");
+        System.out.println("2. Add income");
+        System.out.println("3. Do transfer");
+        System.out.println("4. Close account");
+        System.out.println("5. Log out");
         System.out.println("0. Exit");
     }
     public static void userCreatingAccount(){
@@ -61,14 +63,30 @@ public class Controller {
                 successfulLogInMenu();
                 print =scanner.nextInt();
                 if(print == 0) {
-                    System.out.println("Bye!");
+                    System.out.println("Exit!");
                     break;
                 }else if(print == 1) {
                     System.out.println("Balance: " + simpleBank.getBalance(number));
-                }else if(print == 2){
+                }else if(print == 5){
                     System.out.println("You have successfully logged out!");
                     break;
-
+                }else if (print == 4){
+                    boolean accountDeletion = simpleBank.deleteAccount(number);
+                    if (accountDeletion) {
+                        System.out.println("The account has been closed!");
+                    }else {
+                        System.out.println(number + " is not deleted, check the account number for correct input");
+                    }
+                    break;
+                }else if(print == 2){
+                    System.out.println("Enter income:");
+                    int balance = scanner.nextInt();
+                    boolean addingIncome = simpleBank.updateAccountBalance(number,balance);
+                    if (addingIncome){
+                        System.out.println("Income was added!");
+                    }else {
+                        System.out.println(balance + " was not added to " + number);
+                    }
                 }
             }
 

@@ -1,5 +1,6 @@
 package lewisCode.app;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class CreditCardCreator {
@@ -35,6 +36,26 @@ public class CreditCardCreator {
     public String customerPinGenerator(){
         int pin = random.nextInt((9999 - 1000) + 1) + 1000;
         return String.format("%d",pin);
+    }
+    //...digit checker to ensure validity of the card
+    public  boolean digitChecker(String number) {
+    int[] arrayNum = new int[number.length()];
+        for (int i = number.length()-1; i >= 0; i--) {
+            arrayNum[i] = Integer.parseInt(number.substring(i, i + 1));
+            if (i % 2 == 0) {
+                arrayNum[i] *= 2;
+            }
+            int num = arrayNum[i];
+           if (num > 9){
+               num = num%10 + num/10;
+           }
+           arrayNum[i] = num;
+        }
+        int sum = sumOfDigit(arrayNum);
+        return sum % 10 == 0;
+    }
+    public static  int sumOfDigit(int[]arr){
+        return Arrays.stream(arr).sum();
     }
 
 }

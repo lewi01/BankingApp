@@ -87,6 +87,28 @@ public class Controller {
                     }else {
                         System.out.println(balance + " was not added to " + number);
                     }
+                }else if (print == 3){
+                    System.out.println("Transfer");
+                    System.out.println("Enter card number:");
+                    long inputNum = scanner.nextLong();
+                    String inputNumber = String.valueOf(inputNum);
+                    boolean input = simpleBank.receiverCustomerAccountNumber(inputNumber);
+                    boolean checker = creditCardCreator.digitChecker(inputNumber);
+                    if (inputNumber.equals(number)){
+                        System.out.println("You can't transfer money to the same account!");
+                    } else if (!checker){
+                        System.out.println("Probably you made a mistake in the card number. Please try again!");
+                    }else if(!input){
+                        System.out.println("Such a card does not exist.");
+                    }else {
+//                        System.out.println("Enter how much money you want to transfer:");
+//                        int balance = scanner.nextInt();
+//                        boolean transfer = simpleBank.doTransfer(number, inputNumber, balance);
+//                        if (transfer) {
+//
+//                        }
+                    }
+
                 }
             }
 

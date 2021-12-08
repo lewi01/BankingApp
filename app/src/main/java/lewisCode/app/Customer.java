@@ -5,18 +5,18 @@ import java.util.Random;
 public class Customer {
     private  String customerAccountNumber;
     private  String customerPinNumber;
-    private  double balance ;
+    private   int balance ;
 
     public Customer() {
 
     }
-    public Customer( String customerAccountNumber, String customerPinNumber,double balance) {
+    public Customer( String customerAccountNumber, String customerPinNumber,int balance) {
         this.customerAccountNumber = customerAccountNumber;
         this.customerPinNumber = customerPinNumber;
         this.balance = balance;
     }
 
-    public double getBalance() {
+    public int getBalance() {
         return balance;
     }
 

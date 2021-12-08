@@ -5,6 +5,7 @@ import java.sql.*;
 public class SimpleBank {
 
     private final String url = "jdbc:sqlite:/home/lewi/Softwares/DB/banking.db";
+    private  final   Customer customer = new Customer();
 
     public SimpleBank() {
 
@@ -72,6 +73,22 @@ public class SimpleBank {
         }
         return -1;
     }
+    public boolean receiverCustomerAccountNumber(String number){
+        String sql = "SELECT number "
+                + "FROM customer_Account "
+                + "WHERE  number= ? " ;
+        try (Connection connection = this.connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+            preparedStatement.setString(1,number);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     public boolean checkingCustomerAccountPin(String number, String pin){
         String sql = "SELECT number, pin "
@@ -110,6 +127,23 @@ public class SimpleBank {
             preparedStatement.setInt(1,balance);
             preparedStatement.setString(2,number);
             preparedStatement.executeUpdate();
+            return true;
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+    public boolean doTransfer(String sender,String receiverNumber,int balance){
+        String  sql = "UPDATE customer_Account SET balance= ? WHERE number= ?)";
+        try( Connection connection = this.connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            connection.setAutoCommit(false);
+            int senderBalance = customer.getBalance() - balance;
+            updateAccountBalance(sender,senderBalance);
+            int recipientBalance = customer.getBalance() + balance;
+            updateAccountBalance(receiverNumber,senderBalance);
+            connection.commit();
+            preparedStatement.setInt(1,senderBalance);
             return true;
         }catch (SQLException e){
             System.out.println(e.getMessage());
